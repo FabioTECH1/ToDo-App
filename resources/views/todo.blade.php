@@ -67,12 +67,11 @@
                                         class="d-inline p-4">
                                         @csrf
                                         @method('delete')
-                                        <button class="btn-sm btn-close"></button>
+                                        <button class="btn-sm btn-close shadow-none"></button>
                                     </form>
                                 </div>
                             </td>
                         </tr>
-
                     </tbody>
                 @endforeach
 
