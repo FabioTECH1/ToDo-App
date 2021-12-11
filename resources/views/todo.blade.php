@@ -5,91 +5,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToDo</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <script src="js/bootstrap.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {{-- <link rel="manifest" href="{{ asset('manifest/app.webmanifest') }}"> --}}
+    <link rel="apple-touch-icon" href="{{ asset('logo.PNG') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
+    <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('/sw.js') }}"></script>
+    <script>
+        if (!navigator.serviceWorker.controller) {
+            navigator.serviceWorker.register("/sw.js").then(function(reg) {
+                console.log("Service worker has been registered for scope: " + reg.scope);
+            });
+        }
+    </script>
+
 
 </head>
 
 <body class="bg-light">
-    <h2 class="my-4 text-center">ToDo App</h2>
-    <div class="container-fluid my-3 bg-white p-4" style="width: 40%;">
-        <form action="{{ route('add.task') }}" method="post" class="row gx-3 gy-2 align-items-center">
-            @csrf
-            <input type="text" name="task" class="form-control my-2 shadow-none" id="">
-            <button type="submit" class="btn btn-primary shadow-none">Add</button>
-        </form>
-        @error('task')
-            <p class="text-info text-center my-2">{{ $message }}</p>
-        @enderror
-    </div>
-    @if ($tasks->count() < 1)
-        <h4 class="text-center text-info">No Tasks</h4>
-    @else
-        <h4 class="text-center text-info">You have {{ $tasks->count() }} tasks in total
-            @if ($task2do->count() > 0 && $taskdone->count() > 0)
-                <span class="text-black-50">({{ $taskdone->count() }} completed, {{ $task2do->count() }} to
-                    go)</span>
-            @elseif ($taskdone->count() < 1) <span class="text-warning text-small">(No task done yet)</span>
-                @else
-                    <span class="text-success text-small">(Tasks Completed)</span>
-            @endif
-        </h4>
-    @endif
-    @if ($tasks->count() > 0)
-        <div class="container-fluid my-4" style="width: 40%;">
-            <table class="table table-hover  table-info table-striped table-sm">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Tasks</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                @foreach ($tasks as $task)
-                    <tbody>
-                        <tr>
-                            <td>{{ $task->task }}</td>
-                            @if ($task->status == 0)
-                                <td>Task On Queue</td>
-                            @else
-                                <td>Task Done</td>
-                            @endif
-                            <td>
-                                <div class="custom-control custom-checkbox d-inline">
-                                    <form action="{{ route('done.task', $task->id) }}" method="post"
-                                        id="check{{ $task->id }}" class="d-inline">
-                                        <input type="checkbox"
-                                            onchange="document.getElementById('check{{ $task->id }}').submit()"
-                                            class="custom-control-input" @if ($task->status == 1) checked @endif>
-                                        @csrf
-                                    </form>
-                                    <form action="{{ route('remove.task', $task->id) }}" method="post"
-                                        class="d-inline p-4">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn-sm btn-close shadow-none"></button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                @endforeach
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <h2 class="mb-4 text-center">ToDo App</h2>
+                <div class="col col-xl-10">
+                    <div class="card">
+                        <div class="card-body p-5">
 
-            </table>
-            <form action="{{ route('remove.task.all') }}" method="post" style="text-align: center">
-                @csrf
-                @method('delete')
-                <button type="button" class="btn btn-primary shadow-none"
-                    onclick="document.getElementById('confirmation').style.display='block';">Delete All</button>
-                <div class="my-2" id='confirmation' style="display: none">
-                    <button type="submit" class="btn-sm btn-outline-danger shadow-none">Yes</button>
-                    <button type="button" class="btn-sm btn-outline-success shadow-none"
-                        onclick="document.getElementById('confirmation').style.display='none';">No</button>
+                            <form action="{{ route('add.task', $user_id) }}" id="add_task" method="POST"
+                                class="d-flex justify-content-center align-items-center mb-4">
+                                <div class="form-outline flex-fill">
+                                    <input type="text" id="task" placeholder='New task...'
+                                        class="form-control shadow-none" name="task" required />
+                                </div>
+                                @csrf
+                                <button type="submit" class="btn btn-info ms-2 shadow-none">Add</button>
+                            </form>
+
+
+                            <!-- Tabs content -->
+                            <div class="tab-content" id="ex1-content">
+
+                                <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel"
+                                    aria-labelledby="ex1-tab-1">
+                                    <ul class="list-group mb-0" id="all_tasks">
+                                        @foreach ($tasks as $task)
+                                            <li class="status_form list-group-item d-flex align-items-center border-0 mb-2 rounded"
+                                                style="background-color: #f4f6f7;">
+                                                <form action="{{ route('done.task', [$user_id, $task->id]) }}"
+                                                    method="post" id="check{{ $task->id }}" class="d-inline">
+                                                    <input type="checkbox"
+                                                        class="custom-control-input form-check-input me-2 task_status"
+                                                        @if ($task->status == 1) checked @endif>
+                                                    <span class="task_text text-uppercase">
+                                                        @if ($task->status == 0)
+                                                            {{ $task->task }}
+                                                        @else
+                                                            <s>{{ $task->task }}</s>
+                                                        @endif
+                                                    </span>
+                                                    @csrf
+                                                </form>
+                                                <div>
+                                                    <form action="{{ route('remove.task', [$user_id, $task->id]) }}"
+                                                        method="post" class="d-inline">
+                                                        @csrf
+                                                        @method('delete')
+                                                        {{-- <input type="submit" class="btn-sm btn-close shadow-none"
+                                                            value=""> --}}
+                                                        <button class="btn-sm btn-close shadow-none delete_task"
+                                                            style="margin-left:13em"></button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- Tabs content -->
+                        </div>
+                    </div>
+
                 </div>
-            </form>
+                @if ($tasks->count() <= 0)
+
+                @else
+                    <form action="{{ route('remove.task.all', $user_id) }}" method="post" style="text-align: center"
+                        class="mt-3" id='delete_all'>
+                        @csrf
+                        @method('delete')
+                        <button type="button" class="btn btn-primary shadow-none"
+                            onclick="document.getElementById('confirmation').style.display='block'">Delete All</button>
+                        <div class=" my-2" id='confirmation' style="display: none">
+                            <button type="submit" class="btn-sm btn-outline-danger shadow-none">Yes</button>
+                            <button type="button" class="btn-sm btn-outline-success shadow-none"
+                                onclick="document.getElementById('confirmation').style.display='none';">No</button>
+                        </div>
+                    </form>
+                @endif
+            </div>
         </div>
 
-    @endif
+    </section>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
 </html>

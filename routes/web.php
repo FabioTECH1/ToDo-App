@@ -13,13 +13,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'App\Http\Controllers\TodoController@index')
+Route::get('/{user_id}', 'App\Http\Controllers\TodoController@index')
     ->name('index');
-Route::post('/add', 'App\Http\Controllers\TodoController@store')
+
+Route::get('/', 'App\Http\Controllers\TodoController@checkCookies')
+    ->name('index_2');
+
+Route::post('/{user_id}/add', 'App\Http\Controllers\TodoController@store')
     ->name('add.task');
-Route::post('/{id}/done', 'App\Http\Controllers\TodoController@done')
+Route::post('/{user_id}/{id}/done', 'App\Http\Controllers\TodoController@done')
     ->name('done.task');
-Route::delete('/{id}/remove', 'App\Http\Controllers\TodoController@destroy')
+Route::delete('/{user_id}/{id}/remove', 'App\Http\Controllers\TodoController@destroy')
     ->name('remove.task');
-Route::delete('/remove/all', 'App\Http\Controllers\TodoController@destroyAll')
+Route::delete('/{user_id}/remove/all', 'App\Http\Controllers\TodoController@destroyAll')
     ->name('remove.task.all');

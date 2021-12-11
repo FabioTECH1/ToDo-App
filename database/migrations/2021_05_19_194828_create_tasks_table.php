@@ -18,6 +18,7 @@ class CreateTasksTable extends Migration
             $table->timestamps();
             $table->tinyInteger("status")->default(0);
             $table->string("task");
+            $table->string("user_id");
         });
     }
 

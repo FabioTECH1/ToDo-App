@@ -1,0 +1,27 @@
+
+{   "name": "TODO App",
+    "theme_color": "#f69435",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "http://127.0.0.1:8000/",
+    "start_url": "http://127.0.0.1:8000/",
+    "app_name": "TODO",
+    "short_name": "TODO",
+    "description": "Create ur todo list with ease",
+    "icons": [
+        {
+            "src": "icons/favicon.ico",
+            "sizes": "225x225",
+            "purpose":"maskable",
+            "type": "image/ico"
+        },
+        {
+            "src": "icons/favicon.png",
+            "sizes": "225x225",
+            "purpose":"any",
+            "type": "image/png"
+        }
+    ]
+  
+}
+
