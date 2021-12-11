@@ -1,2 +1,2 @@
-"web: vendor/bin/heroku-php-apache2 public/" 
-"DirectoryIndex index.php"
+web: vendor/bin/heroku-php-apache2 public/
+
