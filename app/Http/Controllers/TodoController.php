@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,6 +12,9 @@ class TodoController extends Controller
 {
     public function checkCookies(Request $request)
     {
+        // Cache::put('test', 'this is just a test');
+        // $cache = Cache::get('test');
+        // dd($cache);
         $user_id = $request->cookie('todo_id');
         $task = Task::where('user_id', $user_id)->first();
         if (!$task) {
