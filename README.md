@@ -21,26 +21,12 @@ Switch to the repo folder
 ``` bash
 cd ToDo-App
 ```
-
 Install all the dependencies using composer
 ``` bash
 composer install
-composer require tymon/jwt-auth
 ```
 
-## Create .env file and make the required configuration changes in it, run the database migrations (**Set the database connection in .env before migrating**)
-
-Generate a new JWT authentication secret key to the .env
-``` bash
-php artisan jwt:secret
-```
-
-Publish the config 
-``` bash
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
-```
-
-Migrate to database
+Create .env file and make the required configuration changes in it, run the database migrations (**Set the database connection in .env before migrating**)
 ``` bash
 php artisan migrate
 ```
@@ -50,15 +36,4 @@ Then launch the server:
 php artisan serve
 ```
 
-## The Laravel sample project is now up and running! Access it at http://127.0.0.1:8000.
-----------
- 
-# Authentication
- 
-This applications uses JSON Web Token (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token. Please check the following sources to learn more about JWT.
- 
-- https://jwt.io/introduction/
-- https://self-issued.info/docs/draft-ietf-oauth-json-web-token.html
-
-----------
-
+The Laravel sample project is now up and running! Access it at http://127.0.0.1:8000.
